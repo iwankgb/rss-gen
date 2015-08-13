@@ -1,0 +1,15 @@
+title: My channel title
+link: http://example.com
+description: What is this and why it exists?
+language: en
+items:
+    - 
+        title: Entry title
+        description: I like this entry because of this and that
+        link: http://example.com/link-1
+        source: http://blog1.example.com/rss
+    - 
+        title: Another entry title
+        description: It is important because of certain aspects
+        link: http://example.com/link-2
+        source: http://blog2.example.com/rss
