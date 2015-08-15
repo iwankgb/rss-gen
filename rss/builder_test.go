@@ -8,7 +8,10 @@ import (
 
 func TestBuilding(t *testing.T) {
 	yamlObject := prepareYamlObject()
-	rss := BuildRssFromYaml(yamlObject, 1)
+	dates := make(map[string]*string)
+	fakeDate := "very fake date"
+	dates["http://example.com/2"] = &fakeDate
+	rss := BuildRssFromYaml(yamlObject, 2, dates)
 	assertChannel(&rss, &yamlObject, t)
 	assertItems(&rss, t)
 }
@@ -29,7 +32,9 @@ func prepareYamlObject() (yamlObject yaml.Channel) {
 	secondItem.Link = "http://example.com/2"
 	secondItem.Source = "http://example.com/yet/another/feed"
 	secondItem.Title = "అందమైన టైటిల్"
-	yamlObject.Items = append(yamlObject.Items, firstItem, secondItem)
+	thirdItem := yaml.Item{}
+
+	yamlObject.Items = append(yamlObject.Items, firstItem, secondItem, thirdItem)
 	return yamlObject
 }
 
@@ -63,7 +68,7 @@ func isCorrectDate(date string) bool {
 
 // Asserts structure if channel items
 func assertItems(rss *Channel, t *testing.T) {
-	if len(rss.Items) != 1 {
+	if len(rss.Items) != 2 {
 		t.Errorf("Wrong items count: found %v instead of 1", len(rss.Items))
 	} else {
 		if rss.Items[0].Description != "First item description" {
@@ -79,7 +84,22 @@ func assertItems(rss *Channel, t *testing.T) {
 			t.Errorf("Wrong source: found %v instead of http://example.com/some/rss/feed\n", rss.Items[0].Source)
 		}
 		if rss.Items[0].Title != "What a wonderful title!" {
-			t.Errorf("Wrong title: found %v instead of అందమైన టైటిల్What a wonderful title!\n", rss.Items[0].Title)
+			t.Errorf("Wrong title: found %v instead of What a wonderful title!\n", rss.Items[0].Title)
+		}
+		if rss.Items[1].Description != "Second item description" {
+			t.Errorf("Wrong item description: found %v instead of First item description\n", rss.Items[1].Description)
+		}
+		if rss.Items[1].Link != "http://example.com/2" {
+			t.Errorf("Wrong item link: found %v instead of http://example.com/2\n", rss.Items[1].Link)
+		}
+		if rss.Items[1].PubDate != "very fake date" {
+			t.Errorf("Wrong publication date found: %v instead of very fake date\n", rss.Items[1].PubDate)
+		}
+		if rss.Items[1].Source != "http://example.com/yet/another/feed" {
+			t.Errorf("Wrong source: found %v instead of http://example.com/yet/another/feed\n", rss.Items[1].Source)
+		}
+		if rss.Items[1].Title != "అందమైన టైటిల్" {
+			t.Errorf("Wrong title: found %v instead of అందమైన టైటిల్\n", rss.Items[1].Title)
 		}
 	}
 }
