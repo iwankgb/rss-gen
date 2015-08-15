@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-func TestBuilding(t *testing.T) {
+func TestBuildingRss(t *testing.T) {
 	yamlObject := prepareYamlObject()
 	dates := make(map[string]*string)
 	fakeDate := "very fake date"
