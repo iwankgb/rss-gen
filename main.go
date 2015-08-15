@@ -20,18 +20,17 @@ var itemsCount = flag.Int("count", 10, "Number of items to be included in the fe
 func main() {
 	flag.Parse()
 	if *yamlFilePath == "" {
-		fmt.Errorf("You have to provide -yaml parameter!")
-		panic("No yaml file path specified")
+		fmt.Println("You have to provide -yaml parameter!")
+		os.Exit(1)
 	}
 	if *existingRssFilePath == "" {
-		fmt.Errorf("You have to provide -rss parameter!")
-		panic("No RSS file path specified")
+		fmt.Println("You have to provide -rss parameter!")
+		os.Exit(2)
 	}
 	existingRss := new(rss.Channel)
 	rssFile, _ := os.Open(*existingRssFilePath)
 	defer rssFile.Close()
 	rssFileInfo, isRssFileValid := rssFile.Stat()
-	fmt.Printf("%+v\n", isRssFileValid)
 	if isRssFileValid == nil {
 		rssFileSize := rssFileInfo.Size()
 		rssContent := make([]byte, rssFileSize)
@@ -39,11 +38,8 @@ func main() {
 		rssReader.Read(rssContent)
 		existingRss = new(rss.Channel)
 		xml.Unmarshal(rssContent, existingRss)
-		fmt.Printf("%+v\n", existingRss)
 	}
-	fmt.Printf("%+v\n", existingRss.Items)
 	datesMap := rss.NewDates(existingRss)
-	fmt.Printf("%+v\n", datesMap)
 	yamlFile, _ := os.Open(*yamlFilePath)
 	defer yamlFile.Close()
 	yamlFileInfo, _ := yamlFile.Stat()
@@ -53,7 +49,7 @@ func main() {
 	var yamlObject yaml.Channel
 	y.Unmarshal(yamlContent, &yamlObject)
 	rssObject := rss.BuildRssFromYaml(yamlObject, *itemsCount, datesMap)
-	//	fmt.Printf("%+v", rssObject)
 	rssXml, _ := xml.Marshal(&rssObject)
 	ioutil.WriteFile(*existingRssFilePath, rssXml, 0644)
+	fmt.Println("RSS updated successfully")
 }
