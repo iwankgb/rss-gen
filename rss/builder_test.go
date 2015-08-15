@@ -8,16 +8,13 @@ import (
 
 func TestBuildingRss(t *testing.T) {
 	yamlObject := prepareYamlObject()
-	dates := make(map[string]*string)
-	fakeDate := "very fake date"
-	dates["http://example.com/2"] = &fakeDate
-	rss := BuildRssFromYaml(yamlObject, 2, dates)
-	assertChannel(&rss, &yamlObject, t)
-	assertItems(&rss, t)
+	rss := createBuilderAndBuild(yamlObject)
+	assertChannel(rss, yamlObject, t)
+	assertItems(rss, t)
 }
 
-// Prepares input structure
-func prepareYamlObject() (yamlObject yaml.Channel) {
+func prepareYamlObject() *yaml.Channel {
+	yamlObject := new(yaml.Channel)
 	yamlObject.Description = "This is Channel description"
 	yamlObject.Language = "en"
 	yamlObject.Link = "http://example.com"
@@ -40,7 +37,16 @@ func prepareYamlObject() (yamlObject yaml.Channel) {
 	return yamlObject
 }
 
-// Asserts structure of channel
+func createBuilderAndBuild(yamlObject *yaml.Channel) *Channel {
+	dates := make(map[string]*string)
+	fakeDate := "very fake date"
+	dates["http://example.com/2"] = &fakeDate
+	limit := 2
+	rssBuilder := NewBuilder(dates, &limit)
+	rssBuilder.BuildRssFromYaml(yamlObject)
+	return rssBuilder.GetRss()
+}
+
 func assertChannel(rss *Channel, yamlObject *yaml.Channel, t *testing.T) {
 	if rss.Description != yamlObject.Description {
 		t.Errorf("Wrong description: found %v instead of %v", rss.Description, yamlObject.Description)
@@ -65,13 +71,11 @@ func assertChannel(rss *Channel, yamlObject *yaml.Channel, t *testing.T) {
 	}
 }
 
-// Dirty way of validation the date
 func isCorrectDate(date string) bool {
 	rssUpdateTime, _ := time.Parse(time.RFC822, date)
 	return rssUpdateTime.Unix()-time.Now().Unix() <= 5
 }
 
-// Asserts structure if channel items
 func assertItems(rss *Channel, t *testing.T) {
 	if len(rss.Items) != 2 {
 		t.Errorf("Wrong items count: found %v instead of 1", len(rss.Items))
