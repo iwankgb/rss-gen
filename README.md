@@ -3,7 +3,7 @@
 rss-gen
 =======
 
-This is just a simple tool that allows to build RSS xml files. See example.yaml for self explanatory yaml input
+This is just a simple tool that allows to build RSS xml files. See [example.yaml](example.yaml) for self explanatory yaml input
 
 Command line options
 --------------------
