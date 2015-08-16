@@ -2,10 +2,6 @@ package rss
 
 import t "time"
 
-type DateResolver interface {
-	GetDate(item *Item) string
-}
-
 func NewKnownDates(dates map[string]*string) *knownDates {
 	return &knownDates{dates}
 }
