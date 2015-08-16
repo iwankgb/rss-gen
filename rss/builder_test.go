@@ -38,9 +38,7 @@ func prepareYamlObject() *yaml.Channel {
 }
 
 func createBuilderAndBuild(yamlObject *yaml.Channel) *Channel {
-	dates := make(map[string]*string)
-	fakeDate := "very fake date"
-	dates["http://example.com/2"] = &fakeDate
+	dates := new(knownDatesMock)
 	limit := 2
 	rssBuilder := NewBuilder(dates, &limit)
 	rssBuilder.BuildRssFromYaml(yamlObject)

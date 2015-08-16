@@ -6,7 +6,7 @@ import t "time"
 import s "crypto/sha512"
 import "fmt"
 
-func NewBuilder(knownDates map[string]*string, itemLimit *int) *rssBuilder {
+func NewBuilder(knownDates DateResolver, itemLimit *int) *rssBuilder {
 	return &rssBuilder{
 		knownDates,
 		itemLimit,
@@ -15,19 +15,17 @@ func NewBuilder(knownDates map[string]*string, itemLimit *int) *rssBuilder {
 }
 
 type rssBuilder struct {
-	knownDates map[string]*string
+	knownDates DateResolver
 	itemLimit  *int
 	rss        Channel
 }
 
-// Builds RSS object from yaml representation
 func (builder *rssBuilder) BuildRssFromYaml(yaml *y.Channel) {
-	builder.buildChannel(yaml)
-	builder.buildItems(yaml)
+	builder.buildChannelElement(yaml)
+	builder.buildItemElements(yaml)
 }
 
-// Builds main channel object
-func (builder *rssBuilder) buildChannel(yaml *y.Channel) {
+func (builder *rssBuilder) buildChannelElement(yaml *y.Channel) {
 	builder.rss.Version = "2.0"
 	builder.rss.Description = yaml.Description
 	builder.rss.Language = yaml.Language
@@ -37,8 +35,7 @@ func (builder *rssBuilder) buildChannel(yaml *y.Channel) {
 	builder.rss.Generator = "https://github.com/iwankgb/rss-gen"
 }
 
-// Builds array of items for RSS
-func (builder *rssBuilder) buildItems(yaml *y.Channel) {
+func (builder *rssBuilder) buildItemElements(yaml *y.Channel) {
 	for i := 0; i < len(yaml.Items) && i < *builder.itemLimit; i++ {
 		item := Item{}
 		item.Description = yaml.Items[i].Description
@@ -48,13 +45,7 @@ func (builder *rssBuilder) buildItems(yaml *y.Channel) {
 		item.Title = yaml.Items[i].Title
 		item.Guid.IsLink = false
 		item.Guid.Value = fmt.Sprintf("%x", s.Sum512([]byte(item.Link)))
-		existingDate, dateExists := builder.knownDates[item.Link]
-		if dateExists {
-			item.PubDate = *existingDate
-		} else {
-			item.PubDate = t.Now().Format(t.RFC822)
-		}
-
+		item.PubDate = builder.knownDates.GetDate(&item)
 		builder.rss.Items = append(builder.rss.Items, item)
 	}
 }
