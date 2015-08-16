@@ -31,9 +31,9 @@ func prepareYamlObject() *yaml.Channel {
 	secondItem.Source.Url = "http://example.com/yet/another/feed"
 	secondItem.Source.Name = "Some random source name"
 	secondItem.Title = "అందమైన టైటిల్"
-	thirdItem := yaml.Item{}
+	emptyItem := yaml.Item{}
 
-	yamlObject.Items = append(yamlObject.Items, firstItem, secondItem, thirdItem)
+	yamlObject.Items = append(yamlObject.Items, emptyItem, firstItem, secondItem)
 	return yamlObject
 }
 
@@ -78,53 +78,53 @@ func assertItems(rss *Channel, t *testing.T) {
 	if len(rss.Items) != 2 {
 		t.Errorf("Wrong items count: found %v instead of 1", len(rss.Items))
 	} else {
-		if rss.Items[0].Description != "First item description" {
-			t.Errorf("Wrong item description: found %v instead of First item description\n", rss.Items[0].Description)
-		}
-		if rss.Items[0].Link != "http://example.com/1" {
-			t.Errorf("Wrong item link: found %v instead of http://example.com/1\n", rss.Items[0].Link)
-		}
-		if !isCorrectDate(rss.Items[0].PubDate) {
-			t.Errorf("Wrong publication date found: %v\n", rss.Items[0].PubDate)
-		}
-		if rss.Items[0].Source.Url != "http://example.com/some/rss/feed" {
-			t.Errorf("Wrong source URL: found %v instead of http://example.com/some/rss/feed\n", rss.Items[0].Source.Url)
-		}
-		if rss.Items[0].Source.Value != "A source name" {
-			t.Errorf("Wrong source name: found %v instead of A source name\n", rss.Items[1].Source.Value)
-		}
-		if rss.Items[0].Title != "What a wonderful title!" {
-			t.Errorf("Wrong title: found %v instead of What a wonderful title!\n", rss.Items[0].Title)
-		}
-		if rss.Items[0].Guid.IsLink != false {
-			t.Error("Guid is not a link")
-		}
-		if rss.Items[0].Guid.Value != "c683bad1870807ad44a9b0413f9b4ac9764e1a0c00ce1eadb4e3e50dd09a2372e921a6ff3e7d2ec7c6ed5023d25900b07f8a7c226979444895acd2d2eab7b981" {
-			t.Errorf("Wrong guid value: found %v instead of c683bad1870807ad44a9b0413f9b4ac9764e1a0c00ce1eadb4e3e50dd09a2372e921a6ff3e7d2ec7c6ed5023d25900b07f8a7c226979444895acd2d2eab7b981\n", rss.Items[0].Guid.Value)
-		}
-		if rss.Items[1].Description != "Second item description" {
+		if rss.Items[1].Description != "First item description" {
 			t.Errorf("Wrong item description: found %v instead of First item description\n", rss.Items[1].Description)
 		}
-		if rss.Items[1].Link != "http://example.com/2" {
-			t.Errorf("Wrong item link: found %v instead of http://example.com/2\n", rss.Items[1].Link)
+		if rss.Items[1].Link != "http://example.com/1" {
+			t.Errorf("Wrong item link: found %v instead of http://example.com/1\n", rss.Items[1].Link)
 		}
-		if rss.Items[1].PubDate != "very fake date" {
-			t.Errorf("Wrong publication date found: %v instead of very fake date\n", rss.Items[1].PubDate)
+		if !isCorrectDate(rss.Items[1].PubDate) {
+			t.Errorf("Wrong publication date found: %v\n", rss.Items[1].PubDate)
 		}
-		if rss.Items[1].Source.Url != "http://example.com/yet/another/feed" {
-			t.Errorf("Wrong source URL: found %v instead of http://example.com/yet/another/feed\n", rss.Items[1].Source)
+		if rss.Items[1].Source.Url != "http://example.com/some/rss/feed" {
+			t.Errorf("Wrong source URL: found %v instead of http://example.com/some/rss/feed\n", rss.Items[1].Source.Url)
 		}
-		if rss.Items[1].Source.Value != "Some random source name" {
-			t.Errorf("Wrong source name: found %v instead of Some random source name\n", rss.Items[1].Source.Value)
+		if rss.Items[1].Source.Value != "A source name" {
+			t.Errorf("Wrong source name: found %v instead of A source name\n", rss.Items[1].Source.Value)
 		}
-		if rss.Items[1].Title != "అందమైన టైటిల్" {
-			t.Errorf("Wrong title: found %v instead of అందమైన టైటిల్\n", rss.Items[1].Title)
+		if rss.Items[1].Title != "What a wonderful title!" {
+			t.Errorf("Wrong title: found %v instead of What a wonderful title!\n", rss.Items[1].Title)
 		}
 		if rss.Items[1].Guid.IsLink != false {
+			t.Error("Guid is not a link")
+		}
+		if rss.Items[1].Guid.Value != "c683bad1870807ad44a9b0413f9b4ac9764e1a0c00ce1eadb4e3e50dd09a2372e921a6ff3e7d2ec7c6ed5023d25900b07f8a7c226979444895acd2d2eab7b981" {
+			t.Errorf("Wrong guid value: found %v instead of c683bad1870807ad44a9b0413f9b4ac9764e1a0c00ce1eadb4e3e50dd09a2372e921a6ff3e7d2ec7c6ed5023d25900b07f8a7c226979444895acd2d2eab7b981\n", rss.Items[1].Guid.Value)
+		}
+		if rss.Items[0].Description != "Second item description" {
+			t.Errorf("Wrong item description: found %v instead of First item description\n", rss.Items[0].Description)
+		}
+		if rss.Items[0].Link != "http://example.com/2" {
+			t.Errorf("Wrong item link: found %v instead of http://example.com/2\n", rss.Items[0].Link)
+		}
+		if rss.Items[0].PubDate != "very fake date" {
+			t.Errorf("Wrong publication date found: %v instead of very fake date\n", rss.Items[0].PubDate)
+		}
+		if rss.Items[0].Source.Url != "http://example.com/yet/another/feed" {
+			t.Errorf("Wrong source URL: found %v instead of http://example.com/yet/another/feed\n", rss.Items[0].Source)
+		}
+		if rss.Items[0].Source.Value != "Some random source name" {
+			t.Errorf("Wrong source name: found %v instead of Some random source name\n", rss.Items[0].Source.Value)
+		}
+		if rss.Items[0].Title != "అందమైన టైటిల్" {
+			t.Errorf("Wrong title: found %v instead of అందమైన టైటిల్\n", rss.Items[0].Title)
+		}
+		if rss.Items[0].Guid.IsLink != false {
 			t.Errorf("Guid is not a link")
 		}
-		if rss.Items[1].Guid.Value != "859c263e81032ee1b9cc8225727124bebfa8de52ceb61ef8b8a82355ae2dbecb678d416aecf154970e57a80d81446b48269b9773b6bedecde1fb45c3259f66ce" {
-			t.Errorf("Wrong guid value: found %v instead of 859c263e81032ee1b9cc8225727124bebfa8de52ceb61ef8b8a82355ae2dbecb678d416aecf154970e57a80d81446b48269b9773b6bedecde1fb45c3259f66ce\n", rss.Items[1].Guid.Value)
+		if rss.Items[0].Guid.Value != "859c263e81032ee1b9cc8225727124bebfa8de52ceb61ef8b8a82355ae2dbecb678d416aecf154970e57a80d81446b48269b9773b6bedecde1fb45c3259f66ce" {
+			t.Errorf("Wrong guid value: found %v instead of 859c263e81032ee1b9cc8225727124bebfa8de52ceb61ef8b8a82355ae2dbecb678d416aecf154970e57a80d81446b48269b9773b6bedecde1fb45c3259f66ce\n", rss.Items[0].Guid.Value)
 		}
 	}
 }

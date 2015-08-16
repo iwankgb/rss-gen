@@ -36,7 +36,8 @@ func (builder *rssBuilder) buildChannelElement(yaml *y.Channel) {
 }
 
 func (builder *rssBuilder) buildItemElements(yaml *y.Channel) {
-	for i := 0; i < len(yaml.Items) && i < *builder.itemLimit; i++ {
+	realLength := len(yaml.Items)
+	for i := realLength - 1; i >= realLength-*builder.itemLimit && i >= 0; i-- {
 		item := Item{}
 		item.Description = yaml.Items[i].Description
 		item.Link = yaml.Items[i].Link
