@@ -3,7 +3,9 @@
 rss-gen
 =======
 
-This is just a simple tool that allows to build RSS xml files. See [example.yaml](resources/example.yaml) for self explanatory yaml input
+This is just a simple tool that allows to build RSS xml files. See [example.yaml](resources/example.yaml) for self explanatory yaml input. I know that parsing yaml to xml might look silly to some of you but I hate idea of maintaining XML file manually...
+
+I do use this tools - see [subjective news review](http://critical.today/files/subiektywny.xml) (Polish only as this is not intended for international audience).
 
 Command line options
 --------------------
